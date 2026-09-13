@@ -1,0 +1,115 @@
+@import "tailwindcss";
+@import "@fontsource/Inter"; /* Defaults to weight 400 */
+
+:root {
+  --background: #ffffff;
+  --foreground: #222222;
+
+  --primary-gradient: linear-gradient(90deg, #7debf2, #60a4ff);
+  --primary-gradient-hover: linear-gradient(90deg, #53d1da, #0f53ac);
+  --primary-gradient-light: linear-gradient(90deg, #9df3f9, #85b8f9);
+
+  --font-sans: "Inter", sans-serif;
+  font-family: var(--font-sans);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono, monospace);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+@layer base {
+  a:link {
+    text-decoration: none;
+  }
+  a.is-link {
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    @apply font-medium;
+  }
+  a:hover {
+    text-decoration: none !important;
+  }
+  a.is-link:hover {
+    text-decoration: underline !important;
+  }
+  a:visited {
+    text-decoration: none;
+  }
+  .icon {
+    @apply w-5 h-5 text-sky-500;
+  }
+  hr {
+    @apply border-t border-gray-200;
+  }
+
+  /* Remove spinners in Chrome / Edge / Safari */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Remove spinner in Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    box-sizing: border-box; /* ensure padding is applied as expected */
+  }
+
+  /* Primary Background */
+  .is-primary-background {
+    background: var(--primary-gradient);
+  }
+
+  [disabled="false"].is-primary-background:hover {
+    background: var(--primary-gradient-hover);
+  }
+  [disabled="false"].is-primary-background:focus {
+    background: var(--primary-gradient-hover);
+  }
+
+  /** Inputs */
+  input {
+    outline: none;
+  }
+  textarea {
+    outline: none;
+  }
+  /** Primary Outline */
+  .is-primary-outline {
+    border: 1px solid; /* You need a solid border to give it width and style */
+    border-image: var(--primary-gradient) 1;
+  }
+  [disabled="false"].is-primary-outline:hover {
+    background: var(--primary-gradient-hover);
+    border: 1px solid var(--primary-gradient-hover);
+  }
+  [disabled="false"].is-primary-outline:focus {
+    background: var(--primary-gradient-hover);
+    border: 1px solid var(--primary-gradient-hover);
+  }
+  /** Primary Select **/
+  .is-primary-select-medium-padding {
+    padding: 8.5px 3px 8.5px 3px;
+  }
+}
+
+@layer utilities {
+}
+
+@layer components {
+}
