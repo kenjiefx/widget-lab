@@ -1,7 +1,7 @@
 export default function LogoThumbnail() {
   return (
     <section>
-      <div className="relative w-25 h-25 flex items-end justify-center is-logo-circle">
+      <div className="relative w-25 h-25 flex items-end justify-center is-logo-circle is-primary-background">
         <div className="absolute bottom-16 flex items-center justify-center w-full h-0 z-20 pointer-events-none">
           {/* Star 1 */}
           <div className="star-particle star-1">
@@ -124,18 +124,18 @@ export default function LogoThumbnail() {
           </div>
         </div>
 
-        <div className="flask-container relative w-30 h-16 z-10 ml-9">
+        <div className="flask-container relative w-30 h-16 z-10 ml-8">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
+            width="70"
+            height="70"
             viewBox="0 0 24 24"
-            fill="url(#flask-gradient)"
-            stroke="none"
+            fill="white"
+            stroke="white"
             stroke-width="1.5"
             stroke-linecap="round"
             stroke-linejoin="round"
-            className="lucide lucide-flask-conical"
+            className=""
           >
             <defs>
               <linearGradient
