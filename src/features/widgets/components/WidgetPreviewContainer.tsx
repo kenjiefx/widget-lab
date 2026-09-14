@@ -1,4 +1,4 @@
-import { Box, Sparkles } from "lucide-react";
+import { Box, Sparkles, Loader2 } from "lucide-react";
 import { WidgetInstance } from "../../../types";
 
 export default function WidgetPreviewContainer({
@@ -14,6 +14,26 @@ export default function WidgetPreviewContainer({
   widgetType: WidgetInstance["className"];
   reloadKey?: number | string;
 }) {
+  if (!widgetId || widgetId.trim() === "") {
+    return (
+      <div className="w-full h-full min-h-[500px] flex flex-col items-center justify-center bg-white p-8">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-[#60a4ff] shadow-xs">
+            <Loader2 className="w-5 h-5 animate-spin" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[#122a3d]">
+              Connecting to Yotpo
+            </p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Discovering widget instances...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (widgetType === "ReviewsMainWidget") {
     const src = `/widgets/reviews-main-widget.html?appKey=${encodeURIComponent(appKey)}&productId=${encodeURIComponent(productId)}&widgetId=${encodeURIComponent(widgetId)}&_r=${reloadKey}`;
     return (
