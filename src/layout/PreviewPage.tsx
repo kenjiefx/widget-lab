@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   KeyRound,
   Box,
@@ -19,6 +19,7 @@ import {
   ShoppingBag,
   SlidersHorizontal,
   Eye,
+  Search,
 } from "lucide-react";
 import WidgetPreviewContainer from "../features/widgets/components/WidgetPreviewContainer";
 import { useProductSimpleDataGetter } from "../features/widgets/hooks/useProductSimpleDataGetter";
@@ -52,9 +53,75 @@ export default function PreviewPage({
     useState<string>(widgetType);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("fluid");
   const [mobileTab, setMobileTab] = useState<"preview" | "config">("preview");
+  const [searchFilter, setSearchFilter] = useState<string>("");
   const [reloadKey, setReloadKey] = useState<number>(0);
   const [isReloading, setIsReloading] = useState<boolean>(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [stickyStyle, setStickyStyle] = useState<React.CSSProperties>({
+    position: "sticky",
+    top: "5rem",
+  });
+
+  // Dynamic sticky positioning:
+  // When scrolling down, sticks to bottom if taller than viewport.
+  // When scrolling up, sticks to top.
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const updateSticky = () => {
+      if (window.innerWidth < 1024) {
+        setStickyStyle({});
+        return;
+      }
+
+      const el = previewRef.current;
+      if (!el) return;
+
+      const elHeight = el.offsetHeight;
+      const windowHeight = window.innerHeight;
+      const topOffset = 80; // 5rem = 80px (64px fixed header + 16px space)
+      const bottomOffset = 16; // 1rem = 16px breathing room at bottom
+
+      // If the preview pane fits in the viewport:
+      if (elHeight <= windowHeight - topOffset - bottomOffset) {
+        setStickyStyle({
+          position: "sticky",
+          top: `${topOffset}px`,
+        });
+        return;
+      }
+
+      // If the preview pane is taller than the viewport:
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollY;
+      lastScrollY = currentScrollY;
+
+      if (scrollingDown) {
+        // Sticky at the bottom part when there is no more to scroll in this pane
+        setStickyStyle({
+          position: "sticky",
+          top: `calc(100vh - ${elHeight + bottomOffset}px)`,
+        });
+      } else {
+        // Sticky at the top part when scrolling up
+        setStickyStyle({
+          position: "sticky",
+          top: `${topOffset}px`,
+        });
+      }
+    };
+
+    window.addEventListener("scroll", updateSticky, { passive: true });
+    window.addEventListener("resize", updateSticky, { passive: true });
+    updateSticky();
+
+    return () => {
+      window.removeEventListener("scroll", updateSticky);
+      window.removeEventListener("resize", updateSticky);
+    };
+  }, [viewportMode, widgetInstances.length]);
 
   // Sync selected widget if props update
   useEffect(() => {
@@ -105,6 +172,12 @@ export default function PreviewPage({
     selectedWidgetInstanceId
   )}`;
 
+  const filteredInstances = widgetInstances.filter(
+    (widget) =>
+      widget.className.toLowerCase().includes(searchFilter.toLowerCase()) ||
+      widget.instanceId.toLowerCase().includes(searchFilter.toLowerCase())
+  );
+
   return (
     <div className="pt-16 min-h-screen bg-[#fbfeff] flex flex-col font-sans">
       {/* Mobile Tab Bar */}
@@ -137,10 +210,10 @@ export default function PreviewPage({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col lg:flex-row h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row items-start min-h-[calc(100vh-4rem)]">
         {/* Left Sidebar: Control & Metadata Panel */}
         <aside
-          className={`w-full lg:w-80 xl:w-92 shrink-0 border-r border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col h-full z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] ${
+          className={`w-full lg:w-80 xl:w-92 shrink-0 border-r border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] ${
             mobileTab === "config" ? "flex" : "hidden lg:flex"
           }`}
         >
@@ -163,8 +236,8 @@ export default function PreviewPage({
             </div>
           </div>
 
-          {/* Scrollable controls */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          {/* Controls section */}
+          <div className="p-5 space-y-5">
             {/* Product Overview Card matching StartPage vector gradient card */}
             <div className="rounded-2xl border border-[#d9edf7] bg-[linear-gradient(150deg,#f3fbfd,#e7f2fb)] p-4 shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between mb-3">
@@ -275,13 +348,28 @@ export default function PreviewPage({
                 </span>
               </div>
 
-              {widgetInstances.length === 0 ? (
+              {widgetInstances.length > 4 && (
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={searchFilter}
+                    onChange={(e) => setSearchFilter(e.target.value)}
+                    placeholder="Search instances..."
+                    className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#60a4ff] focus:bg-white transition-all"
+                  />
+                </div>
+              )}
+
+              {filteredInstances.length === 0 ? (
                 <div className="p-4 rounded-xl border border-dashed border-slate-200 text-center text-xs text-slate-500">
-                  No widget instances discovered for this App Key.
+                  {widgetInstances.length === 0
+                    ? "No widget instances discovered for this App Key."
+                    : "No widget instances matching search."}
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {widgetInstances.map((widget) => {
+                  {filteredInstances.map((widget) => {
                     const isSelected = widget.instanceId === selectedWidgetInstanceId;
                     return (
                       <button
@@ -332,7 +420,9 @@ export default function PreviewPage({
 
         {/* Main Preview Canvas Area */}
         <main
-          className={`flex-1 flex-col h-full bg-slate-100/70 min-w-0 overflow-hidden ${
+          ref={previewRef}
+          style={stickyStyle}
+          className={`flex-1 flex-col bg-slate-100/70 min-w-0 w-full overflow-hidden self-start transition-[top] duration-75 ${
             mobileTab === "preview" ? "flex" : "hidden lg:flex"
           }`}
         >
@@ -446,7 +536,7 @@ export default function PreviewPage({
 
           {/* Preview Canvas Surface */}
           <div
-            className="flex-1 overflow-auto p-3 sm:p-5 lg:p-6 flex justify-center items-start"
+            className="flex-1 p-3 sm:p-4 flex justify-center items-start"
             style={{
               backgroundImage:
                 "radial-gradient(rgba(148, 163, 184, 0.28) 1px, transparent 0)",
@@ -457,12 +547,12 @@ export default function PreviewPage({
             <div
               className={`bg-white rounded-2xl border border-slate-200/90 shadow-[0_12px_40px_-16px_rgba(15,23,42,0.08)] flex flex-col overflow-hidden transition-all duration-300 w-full ${
                 viewportMode === "fluid"
-                  ? "h-full min-h-[650px]"
+                  ? "h-[calc(100vh-11.5rem)] min-h-[520px]"
                   : viewportMode === "desktop"
-                  ? "max-w-[1200px] h-[calc(100vh-8.5rem)] min-h-[650px]"
+                  ? "max-w-[1200px] h-[calc(100vh-11.5rem)] min-h-[520px]"
                   : viewportMode === "tablet"
-                  ? "max-w-[768px] h-[calc(100vh-8.5rem)] min-h-[650px]"
-                  : "max-w-[390px] h-[calc(100vh-8.5rem)] min-h-[650px] rounded-3xl border-2 border-slate-300 shadow-[0_20px_50px_-16px_rgba(15,23,42,0.15)]"
+                  ? "max-w-[768px] h-[calc(100vh-11.5rem)] min-h-[520px]"
+                  : "max-w-[390px] h-[calc(100vh-11.5rem)] min-h-[520px] rounded-3xl border-2 border-slate-300 shadow-[0_20px_50px_-16px_rgba(15,23,42,0.15)]"
               }`}
             >
               {/* Simulated Browser Bar (Eliminates the raw iframe feel) */}
@@ -489,8 +579,8 @@ export default function PreviewPage({
                 </div>
               </div>
 
-              {/* Live Preview Container */}
-              <div className="flex-1 w-full h-full bg-white overflow-hidden relative">
+              {/* Live Preview Container (Scrollable) */}
+              <div className="flex-1 w-full h-full bg-white overflow-y-auto relative">
                 <WidgetPreviewContainer
                   appKey={appKey}
                   productId={productId}
