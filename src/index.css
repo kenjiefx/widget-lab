@@ -93,7 +93,14 @@ background-clip: text;
   }
 
   .logo-text {
-    font-family: "Fredoka One", cursive;
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.010em;
+  }
+
+  .is-title-text {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
   }
 
   /** Inputs */
@@ -264,3 +271,37 @@ background-clip: text;
         .star-6 { animation: starBoilRight 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 2.2s; }
         .star-7 { animation: starBoilLeft 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 2.7s; }
         .star-8 { animation: starBoilMicro 3.1s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 1.4s; }
+
+/* Start page: flask liquid + rising bubbles */
+.start-liquid {
+    transform-origin: center;
+    animation: startLiquidWave 3.4s ease-in-out infinite;
+}
+@keyframes startLiquidWave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-0.6px); }
+}
+
+.start-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #a9defd 70%);
+    opacity: 0;
+    animation: startBubbleRise 3.6s ease-in infinite;
+}
+.start-bubble-1 { top: 62%; left: 44%; width: 5px; height: 5px; animation-delay: 0s; }
+.start-bubble-2 { top: 66%; left: 52%; width: 7px; height: 7px; animation-delay: 1.1s; }
+.start-bubble-3 { top: 60%; left: 49%; width: 4px; height: 4px; animation-delay: 2.2s; }
+
+@keyframes startBubbleRise {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    15% { opacity: 0.9; }
+    80% { opacity: 0.5; }
+    100% { transform: translateY(-46px) scale(1.1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .start-liquid, .start-bubble, .star-particle {
+        animation: none !important;
+    }
+}
