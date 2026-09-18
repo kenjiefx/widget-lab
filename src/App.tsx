@@ -5,14 +5,14 @@ import getWidgetInstanceIds from "./features/loader/services/getWidgetInstanceId
 import { WidgetInstance } from "./types";
 import WidgetPreviewContainer from "./features/widgets/components/WidgetPreviewContainer";
 import PreviewPage from "./layout/PreviewPage";
+import useStoreContext from "./features/store/hooks/useStoreContext";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [widgetInstanceId, setWidgetInstanceId] = useState<string | null>(null);
   const [widgetInstances, setWidgetInstances] = useState<WidgetInstance[]>([]);
+  const { appKey, productId } = useStoreContext();
   const urlParams = new URLSearchParams(window.location.search);
-  const appKey = urlParams.get("appKey") || "";
-  const productId = urlParams.get("productId") || "";
   const widgetType = urlParams.get("widget") || "ReviewsMainWidget";
   useEffect(() => {
     async function fetchWidgets() {
@@ -37,7 +37,7 @@ export default function App() {
   const isPreviewPage = appKey !== "" && productId !== "";
   return (
     <div className="App">
-      <Header />
+      <Header isPreviewPage={isPreviewPage} />
       {isPreviewPage ? (
         <main>
           <PreviewPage

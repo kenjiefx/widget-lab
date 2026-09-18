@@ -1,13 +1,14 @@
 import { KeyRound, Box } from "lucide-react";
 import { useState } from "react";
+import useStoreContext from "../features/store/hooks/useStoreContext";
 
 export default function StartPage() {
-  const [appKey, setAppKey] = useState("");
-  const [productId, setProductId] = useState("");
+  const { appKey, productId, setSession } = useStoreContext();
+  const [localAppKey, setLocalAppKey] = useState(appKey);
+  const [localProductId, setLocalProductId] = useState(productId);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const params = `?appKey=${encodeURIComponent(appKey)}&productId=${encodeURIComponent(productId)}`;
-    window.location.href = `/${params}`;
+    setSession(localAppKey, localProductId);
   };
   return (
     <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center gap-14 lg:gap-20 px-6 sm:px-10 lg:px-20 pt-28 pb-16">
@@ -30,8 +31,8 @@ export default function StartPage() {
               App Key
             </label>
             <input
-              value={appKey}
-              onChange={(e) => setAppKey(e.target.value)}
+              value={localAppKey}
+              onChange={(e) => setLocalAppKey(e.target.value)}
               id="appKey"
               type="text"
               placeholder="iXOAlMhR8547ex7PS66fpGGdeq0V0YQ1pa3J0QJy"
@@ -50,8 +51,8 @@ export default function StartPage() {
             </label>
             <input
               id="productId"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
+              value={localProductId}
+              onChange={(e) => setLocalProductId(e.target.value)}
               type="text"
               placeholder="99817238182920"
               autoComplete="off"
