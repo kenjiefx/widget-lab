@@ -27,6 +27,7 @@ import { useProductSimpleDataGetter } from "../features/widgets/hooks/useProduct
 import { WidgetData, WidgetInstance } from "../types";
 import WidgetLibrary from "./pages/preview/WidgetLibrary";
 import WidgetCode from "./pages/preview/WidgetCode";
+import { generatePreviewUrl } from "../features/widgets/services/previewService";
 
 type Props = {
   appKey: string;
@@ -129,19 +130,6 @@ export default function PreviewPage({
     };
   }, [viewportMode, widgetData.length]);
 
-  // Sync selected widget if props update
-  // useEffect(() => {
-  //   if (
-  //     widgetId &&
-  //     (!selectedWidgetInstanceId || selectedWidgetInstanceId === "")
-  //   ) {
-  //     setSelectedWidgetInstanceId(widgetId);
-  //   } else if (!selectedWidgetInstanceId && widgetData.length > 0) {
-  //     setSelectedWidgetInstanceId(widgetData[0].instanceId);
-  //     setSelectedWidgetType(widgetData[0].className);
-  //   }
-  // }, [widgetId, widgetData]);
-
   function handleSelectWidgetInstance(widgetTypeId: string) {
     const selectedWidget = widgetData.find((w) => w.typeId === widgetTypeId);
     if (!selectedWidget) return;
@@ -164,14 +152,13 @@ export default function PreviewPage({
     }
   }
 
-  let params = new URLSearchParams({
+  const rawPreviewUrl = generatePreviewUrl({
     appKey,
     productId,
     widgetId: selectedWidgetInstanceId,
     widgetTypeId: selectedWidgetTypeId,
-    _r: reloadKey.toString(),
+    reloadKey: reloadKey.toString(),
   });
-  const rawPreviewUrl = `/widgets/preview.html?${params.toString()}`;
 
   return (
     <div className="pt-16 min-h-screen bg-[#fbfeff] flex flex-col font-sans">
