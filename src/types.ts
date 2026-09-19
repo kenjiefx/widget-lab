@@ -34,6 +34,7 @@ export type SimpleProductData = {
   productId: string;
   name: string;
   url: string;
+  imageUrl: string;
 };
 
 /**

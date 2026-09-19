@@ -1,8 +1,10 @@
-import { KeyRound, Box } from "lucide-react";
+import { KeyRound, Box, ExternalLink, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 import LogoText from "../features/logo/components/LogoText";
 import LogoThumbnail from "../features/logo/components/LogoThumbnail";
 import useStoreContext from "../features/store/hooks/useStoreContext";
+import { useProductSimpleDataGetter } from "../features/widgets/hooks/useProductSimpleDataGetter";
+import { ProductOverviewCard } from "./pages/header/ProductOverviewCard";
 
 type Props = {
   isPreviewPage: boolean;
@@ -12,14 +14,6 @@ export default function Header({ isPreviewPage }: Props) {
   const { appKey, productId, setSession } = useStoreContext();
   const [localAppKey, setLocalAppKey] = useState(appKey);
   const [localProductId, setLocalProductId] = useState(productId);
-
-  useEffect(() => {
-    setLocalAppKey(appKey);
-  }, [appKey]);
-
-  useEffect(() => {
-    setLocalProductId(productId);
-  }, [productId]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) {
@@ -53,10 +47,20 @@ export default function Header({ isPreviewPage }: Props) {
         <div className="flex items-center ml-3 z-100">
           <LogoText />
         </div>
+        {/* Product Overview Card matching StartPage vector gradient card */}
+        {isPreviewPage && (
+          <ProductOverviewCard
+            appKey={localAppKey}
+            productId={localProductId}
+          />
+        )}
       </div>
       <div className="flex items-center mr-3">
         {isPreviewPage && (
-          <form className="flex items-center gap-2 sm:gap-3" onSubmit={handleSubmit}>
+          <form
+            className="flex items-center gap-2 sm:gap-3"
+            onSubmit={handleSubmit}
+          >
             <div className="relative flex items-center">
               <div className="absolute left-3 flex items-center pointer-events-none text-[#60a4ff]">
                 <KeyRound className="w-4 h-4" strokeWidth={2} />
