@@ -85,19 +85,6 @@ function renderLineTokens(line: string) {
   return elements.length > 0 ? elements : <span>{line}</span>;
 }
 
-declare global {
-  interface Window {
-    __WDGCONF?: {
-      getWidgetHTML: (
-        appKey: string,
-        productId: string,
-        widgetId: string,
-        widgetTypeId: string,
-      ) => string;
-    };
-  }
-}
-
 export default function WidgetCode({
   appKey,
   productId,

@@ -47,3 +47,16 @@ export type Store = {
   isValid: () => boolean;
   setSession: (appKey: string, productId: string) => void;
 };
+
+declare global {
+  interface Window {
+    __WDGCONF?: {
+      getWidgetHTML: (
+        appKey: string,
+        productId: string,
+        widgetId: string,
+        widgetTypeId: string,
+      ) => string;
+    };
+  }
+}

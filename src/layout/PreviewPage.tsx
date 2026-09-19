@@ -28,6 +28,7 @@ import { WidgetData, WidgetInstance } from "../types";
 import WidgetLibrary from "./pages/preview/WidgetLibrary";
 import WidgetCode from "./pages/preview/WidgetCode";
 import { generatePreviewUrl } from "../features/widgets/services/previewService";
+import WidgetHTML from "./pages/preview/WidgetHTML";
 
 type Props = {
   appKey: string;
@@ -207,7 +208,7 @@ export default function PreviewPage({
       <div className="flex-1 flex flex-col lg:flex-row items-start min-h-[calc(100vh-4rem)]">
         {/* Left Sidebar: Control & Metadata Panel */}
         <aside
-          className={`w-full lg:w-70 xl:w-82 shrink-0 border-r border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] ${
+          className={`w-full lg:w-80 xl:w-92 shrink-0 border-r border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] ${
             mobileTab === "config" ? "flex" : "hidden lg:flex"
           }`}
         >
@@ -233,7 +234,7 @@ export default function PreviewPage({
           {/* Controls section */}
           <div className="p-5 space-y-5">
             {/* Product Overview Card matching StartPage vector gradient card */}
-            <div className="rounded-2xl border border-[#d9edf7] bg-[linear-gradient(150deg,#f3fbfd,#e7f2fb)] p-4 shadow-sm relative overflow-hidden">
+            {/* <div className="rounded-2xl border border-[#d9edf7] bg-[linear-gradient(150deg,#f3fbfd,#e7f2fb)] p-4 shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
                   <Box className="w-3.5 h-3.5 text-[#60a4ff]" /> Product Info
@@ -310,7 +311,14 @@ export default function PreviewPage({
                   </p>
                 </div>
               )}
-            </div>
+            </div> */}
+
+            <WidgetHTML
+              appKey={appKey}
+              productId={productId}
+              widgetId={selectedWidgetInstanceId}
+              widgetTypeId={selectedWidgetTypeId}
+            />
 
             {/* App Key Credential Card */}
             <div className="rounded-xl border border-slate-200/80 bg-white p-3 shadow-xs">
@@ -516,7 +524,7 @@ export default function PreviewPage({
         </main>
 
         {/* Right Sidebar: Widget Code & Info Panel */}
-        <aside
+        {/* <aside
           className={`w-full lg:w-74 xl:w-86 shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[-4px_0_24px_-12px_rgba(0,0,0,0.05)] lg:sticky lg:top-16 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto ${
             mobileTab === "code" ? "flex" : "hidden lg:flex"
           }`}
@@ -527,7 +535,7 @@ export default function PreviewPage({
             widgetId={selectedWidgetInstanceId}
             widgetTypeId={selectedWidgetTypeId}
           />
-        </aside>
+        </aside> */}
       </div>
     </div>
   );
