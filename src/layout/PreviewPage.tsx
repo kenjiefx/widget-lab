@@ -54,11 +54,8 @@ export default function PreviewPage({
 
   const [selectedWidgetTypeId, setSelectedWidgetTypeId] =
     useState<string>(widgetTypeId);
-
   const [selectedWidgetInstanceId, setSelectedWidgetInstanceId] =
     useState<string>(widgetId);
-  const [selectedWidgetType, setSelectedWidgetType] =
-    useState<string>(widgetType);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("fluid");
   const [mobileTab, setMobileTab] = useState<"preview" | "config" | "code">(
     "preview",
@@ -150,7 +147,6 @@ export default function PreviewPage({
     if (!selectedWidget) return;
     setSelectedWidgetInstanceId(selectedWidget.instanceId);
     setSelectedWidgetTypeId(selectedWidget.typeId);
-    setSelectedWidgetType(selectedWidget.classDisplayName);
     setMobileTab("preview");
   }
 
@@ -461,17 +457,15 @@ export default function PreviewPage({
                   }`}
                 />
               </button>
-              {selectedWidgetType === "ReviewsMainWidget" && (
-                <a
-                  href={rawPreviewUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  title="Open raw widget in new tab"
-                  className="p-2 text-slate-500 hover:text-[#122a3d] hover:bg-slate-100 rounded-lg transition-colors hidden md:block"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              )}
+              <a
+                href={rawPreviewUrl}
+                target="_blank"
+                rel="noreferrer"
+                title="Open raw widget in new tab"
+                className="p-2 text-slate-500 hover:text-[#122a3d] hover:bg-slate-100 rounded-lg transition-colors hidden md:block"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
