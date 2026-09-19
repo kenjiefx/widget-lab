@@ -15,6 +15,11 @@ export default function Header({ isPreviewPage }: Props) {
   const [localAppKey, setLocalAppKey] = useState(appKey);
   const [localProductId, setLocalProductId] = useState(productId);
 
+  useEffect(() => {
+    setLocalAppKey(appKey);
+    setLocalProductId(productId);
+  }, [appKey, productId]);
+
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
@@ -42,20 +47,20 @@ export default function Header({ isPreviewPage }: Props) {
 
   return (
     <header className="flex items-center justify-between fixed top-0 left-0 right-0 h-16 bg-slate-50 z-50 shadow-md">
-      <div className="flex items-center">
+      <div className="flex items-center min-w-0 mr-3">
         <LogoThumbnail />
-        <div className="flex items-center ml-3 z-100">
+        <div className="flex items-center ml-3 z-100 shrink-0">
           <LogoText />
         </div>
         {/* Product Overview Card matching StartPage vector gradient card */}
         {isPreviewPage && (
           <ProductOverviewCard
-            appKey={localAppKey}
-            productId={localProductId}
+            appKey={appKey}
+            productId={productId}
           />
         )}
       </div>
-      <div className="flex items-center mr-3">
+      <div className="flex items-center mr-3 shrink-0">
         {isPreviewPage && (
           <form
             className="flex items-center gap-2 sm:gap-3"

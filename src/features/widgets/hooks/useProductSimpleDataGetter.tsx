@@ -41,10 +41,14 @@ export function useProductSimpleDataGetter(p: {
           setData({
             isFound: true,
             productId: product.domainKey,
-            yotpoInternalId: product.id,
-            name: product.name,
-            url: product.productLink,
-            imageUrl: product.imageLink,
+            yotpoInternalId: String(product.id || ""),
+            name: product.name || "",
+            url: product.productLink || product.url || "",
+            imageUrl:
+              product.imageLink ||
+              product.imageUrl ||
+              product.image_url ||
+              "",
           });
           return;
         }
@@ -66,15 +70,20 @@ export function useProductSimpleDataGetter(p: {
 
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    if (undefined === appKey || null === appKey || "" === appKey) {
+    if (!appKey || !productId) {
       setIsLoading(false);
+      setData({
+        isFound: false,
+        yotpoInternalId: "",
+        productId: "",
+        name: "",
+        url: "",
+        imageUrl: "",
+      });
       return;
     }
-    if (undefined === productId || null === productId || "" === productId) {
-      setIsLoading(false);
-      return;
-    }
+    setIsLoading(true);
     fetchData();
-  }, []);
+  }, [appKey, productId]);
   return { simpleProductData: data, isLoading };
 }
