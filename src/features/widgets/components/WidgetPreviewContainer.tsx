@@ -7,6 +7,7 @@ export type Props = {
   productId: string;
   widgetId: string;
   widgetTypeId: string;
+  language: string;
   reloadKey?: number | string;
 };
 
@@ -15,6 +16,7 @@ export default function WidgetPreviewContainer({
   productId,
   widgetId,
   widgetTypeId,
+  language,
   reloadKey = 0,
 }: Props) {
   if (!widgetId || widgetId.trim() === "") {
@@ -42,6 +44,7 @@ export default function WidgetPreviewContainer({
     productId,
     widgetId,
     widgetTypeId,
+    language,
     reloadKey: reloadKey.toString(),
   });
   return (

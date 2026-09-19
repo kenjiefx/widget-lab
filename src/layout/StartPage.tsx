@@ -3,12 +3,12 @@ import { useState } from "react";
 import useStoreContext from "../features/store/hooks/useStoreContext";
 
 export default function StartPage() {
-  const { appKey, productId, setSession } = useStoreContext();
+  const { appKey, productId, language, setSession } = useStoreContext();
   const [localAppKey, setLocalAppKey] = useState(appKey);
   const [localProductId, setLocalProductId] = useState(productId);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSession(localAppKey, localProductId);
+    setSession(localAppKey, localProductId, language);
   };
   return (
     <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center gap-14 lg:gap-20 px-6 sm:px-10 lg:px-20 pt-28 pb-16">

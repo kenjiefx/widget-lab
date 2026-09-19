@@ -6,6 +6,7 @@ type Props = {
   productId: string;
   widgetId: string;
   widgetTypeId: string;
+  language: string;
 };
 
 export default function WidgetHTML({
@@ -13,6 +14,7 @@ export default function WidgetHTML({
   productId,
   widgetId,
   widgetTypeId,
+  language,
 }: Props) {
   const widgetHTML: string =
     typeof window !== "undefined" && window.__WDGCONF?.getWidgetHTML
@@ -43,14 +45,14 @@ export default function WidgetHTML({
   function generateWidgetLoaderScript() {
     if (widgetData) {
       if (!widgetData.isLegacy) {
-        return `<script type="text/javascript" src="https://cdn-widgetsrepository.yotpo.com/v1/loader/${appKey}"></script>`;
+        return `<script type="text/javascript" src="https://cdn-widgetsrepository.yotpo.com/v1/loader/${appKey}?languageCode=${language}"></script>`;
       } else {
         return `<script type="text/javascript">
   (function e(){
     var e=document.createElement("script");
     e.type="text/javascript",
     e.async=true,
-    e.src="//staticw2.yotpo.com/${appKey}/widget.js?v2enforce=true";
+    e.src="//staticw2.yotpo.com/${appKey}/widget.js?v2enforce=true&lang=${language}";
     var t=document.getElementsByTagName("script")[0];
     t.parentNode.insertBefore(e,t)
   })();

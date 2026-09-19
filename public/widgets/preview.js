@@ -30,6 +30,10 @@
       renderErrorInWidgetContainer("Missing widgetTypeId parameter");
       return;
     }
+    let language = new URLSearchParams(window.location.search).get("lang");
+    if (!language || language.trim() === "") {
+      language = "en";
+    }
     const widgetHTML = renderInWidgetContainer(
       appKey,
       productId,
@@ -42,14 +46,14 @@
       var e = document.createElement("script");
       ((e.type = "text/javascript"),
         (e.async = true),
-        (e.src = `//cdn-widgetsrepository.yotpo.com/v1/loader/${appKey}`));
+        (e.src = `//cdn-widgetsrepository.yotpo.com/v1/loader/${appKey}?languageCode=${language}`));
       var t = document.getElementsByTagName("script")[0];
       t.parentNode.insertBefore(e, t);
     } else {
       var e = document.createElement("script");
       ((e.type = "text/javascript"),
         (e.async = true),
-        (e.src = `//staticw2.yotpo.com/${appKey}/widget.js?v2enforce=true`));
+        (e.src = `//staticw2.yotpo.com/${appKey}/widget.js?v2enforce=true&lang=${language}`));
       var t = document.getElementsByTagName("script")[0];
       t.parentNode.insertBefore(e, t);
     }

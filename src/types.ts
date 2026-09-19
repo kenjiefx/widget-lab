@@ -45,8 +45,9 @@ export type Store = {
   isLoading: () => Promise<boolean>;
   appKey: string;
   productId: string;
+  language: string;
   isValid: () => boolean;
-  setSession: (appKey: string, productId: string) => void;
+  setSession: (appKey: string, productId: string, language?: string) => void;
 };
 
 declare global {

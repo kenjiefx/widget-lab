@@ -15,7 +15,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [widgetInstanceId, setWidgetInstanceId] = useState<string | null>(null);
   const [widgetData, setWidgetData] = useState<WidgetData[]>([]);
-  const { appKey, productId } = useStoreContext();
+  const { appKey, productId, language } = useStoreContext();
   const urlParams = new URLSearchParams(window.location.search);
   const widgetType = "ReviewsMainWidget";
   useEffect(() => {
@@ -58,6 +58,7 @@ export default function App() {
             widgetId={widgetInstanceId || ""}
             widgetTypeId={"1"}
             widgetType={widgetType}
+            language={language}
             widgetData={widgetData}
           />
         </main>

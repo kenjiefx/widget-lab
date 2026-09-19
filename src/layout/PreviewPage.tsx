@@ -36,6 +36,7 @@ type Props = {
   widgetTypeId: string;
   widgetId: string;
   widgetType: string;
+  language: string;
   widgetData: WidgetData[];
 };
 
@@ -47,6 +48,7 @@ export default function PreviewPage({
   widgetId,
   widgetType,
   widgetTypeId,
+  language,
   widgetData,
 }: Props) {
   const { simpleProductData, isLoading } = useProductSimpleDataGetter({
@@ -158,6 +160,7 @@ export default function PreviewPage({
     productId,
     widgetId: selectedWidgetInstanceId,
     widgetTypeId: selectedWidgetTypeId,
+    language,
     reloadKey: reloadKey.toString(),
   });
 
@@ -238,6 +241,7 @@ export default function PreviewPage({
               productId={productId}
               widgetId={selectedWidgetInstanceId}
               widgetTypeId={selectedWidgetTypeId}
+              language={language}
             />
 
             {/* App Key Credential Card */}
@@ -434,6 +438,7 @@ export default function PreviewPage({
                 <WidgetPreviewContainer
                   appKey={appKey}
                   productId={productId}
+                  language={language}
                   widgetId={selectedWidgetInstanceId}
                   widgetTypeId={selectedWidgetTypeId}
                   reloadKey={reloadKey}
@@ -442,20 +447,6 @@ export default function PreviewPage({
             </div>
           </div>
         </main>
-
-        {/* Right Sidebar: Widget Code & Info Panel */}
-        {/* <aside
-          className={`w-full lg:w-74 xl:w-86 shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[-4px_0_24px_-12px_rgba(0,0,0,0.05)] lg:sticky lg:top-16 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto ${
-            mobileTab === "code" ? "flex" : "hidden lg:flex"
-          }`}
-        >
-          <WidgetCode
-            appKey={appKey}
-            productId={productId}
-            widgetId={selectedWidgetInstanceId}
-            widgetTypeId={selectedWidgetTypeId}
-          />
-        </aside> */}
       </div>
     </div>
   );
