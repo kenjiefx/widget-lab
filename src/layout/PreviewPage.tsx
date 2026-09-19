@@ -20,11 +20,13 @@ import {
   SlidersHorizontal,
   Eye,
   Search,
+  Code2,
 } from "lucide-react";
 import WidgetPreviewContainer from "../features/widgets/components/WidgetPreviewContainer";
 import { useProductSimpleDataGetter } from "../features/widgets/hooks/useProductSimpleDataGetter";
 import { WidgetData, WidgetInstance } from "../types";
 import WidgetLibrary from "./pages/preview/WidgetLibrary";
+import WidgetCode from "./pages/preview/WidgetCode";
 
 type Props = {
   appKey: string;
@@ -58,7 +60,9 @@ export default function PreviewPage({
   const [selectedWidgetType, setSelectedWidgetType] =
     useState<string>(widgetType);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("fluid");
-  const [mobileTab, setMobileTab] = useState<"preview" | "config">("preview");
+  const [mobileTab, setMobileTab] = useState<"preview" | "config" | "code">(
+    "preview",
+  );
   const [reloadKey, setReloadKey] = useState<number>(0);
   const [isReloading, setIsReloading] = useState<boolean>(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -129,23 +133,24 @@ export default function PreviewPage({
   }, [viewportMode, widgetData.length]);
 
   // Sync selected widget if props update
-  useEffect(() => {
-    if (
-      widgetId &&
-      (!selectedWidgetInstanceId || selectedWidgetInstanceId === "")
-    ) {
-      setSelectedWidgetInstanceId(widgetId);
-    } else if (!selectedWidgetInstanceId && widgetData.length > 0) {
-      setSelectedWidgetInstanceId(widgetData[0].instanceId);
-      setSelectedWidgetType(widgetData[0].className);
-    }
-  }, [widgetId, widgetData]);
+  // useEffect(() => {
+  //   if (
+  //     widgetId &&
+  //     (!selectedWidgetInstanceId || selectedWidgetInstanceId === "")
+  //   ) {
+  //     setSelectedWidgetInstanceId(widgetId);
+  //   } else if (!selectedWidgetInstanceId && widgetData.length > 0) {
+  //     setSelectedWidgetInstanceId(widgetData[0].instanceId);
+  //     setSelectedWidgetType(widgetData[0].className);
+  //   }
+  // }, [widgetId, widgetData]);
 
   function handleSelectWidgetInstance(widgetTypeId: string) {
     const selectedWidget = widgetData.find((w) => w.typeId === widgetTypeId);
     if (!selectedWidget) return;
     setSelectedWidgetInstanceId(selectedWidget.instanceId);
     setSelectedWidgetTypeId(selectedWidget.typeId);
+    setSelectedWidgetType(selectedWidget.classDisplayName);
     setMobileTab("preview");
   }
 
@@ -176,7 +181,7 @@ export default function PreviewPage({
     <div className="pt-16 min-h-screen bg-[#fbfeff] flex flex-col font-sans">
       {/* Mobile Tab Bar */}
       <div className="lg:hidden flex items-center justify-center bg-white border-b border-slate-200 px-4 py-2 shrink-0">
-        <div className="flex w-full max-w-xs bg-slate-100 p-1 rounded-xl">
+        <div className="flex w-full max-w-sm bg-slate-100 p-1 rounded-xl">
           <button
             type="button"
             onClick={() => setMobileTab("preview")}
@@ -187,7 +192,7 @@ export default function PreviewPage({
             }`}
           >
             <Eye className="w-3.5 h-3.5 text-[#60a4ff]" />
-            <span>Live Preview</span>
+            <span>Preview</span>
           </button>
           <button
             type="button"
@@ -199,7 +204,19 @@ export default function PreviewPage({
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5 text-[#60a4ff]" />
-            <span>Inspector & Info</span>
+            <span>Inspector</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileTab("code")}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+              mobileTab === "code"
+                ? "bg-white text-[#122a3d] shadow-xs"
+                : "text-slate-500"
+            }`}
+          >
+            <Code2 className="w-3.5 h-3.5 text-[#60a4ff]" />
+            <span>Code</span>
           </button>
         </div>
       </div>
@@ -207,7 +224,7 @@ export default function PreviewPage({
       <div className="flex-1 flex flex-col lg:flex-row items-start min-h-[calc(100vh-4rem)]">
         {/* Left Sidebar: Control & Metadata Panel */}
         <aside
-          className={`w-full lg:w-80 xl:w-92 shrink-0 border-r border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] ${
+          className={`w-full lg:w-70 xl:w-82 shrink-0 border-r border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] ${
             mobileTab === "config" ? "flex" : "hidden lg:flex"
           }`}
         >
@@ -372,15 +389,6 @@ export default function PreviewPage({
                   Live Preview
                 </span>
               </div>
-              <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
-              <div className="flex items-center gap-2 truncate">
-                <span className="text-xs sm:text-sm font-semibold text-[#122a3d] truncate">
-                  {selectedWidgetType || "No widget selected"}
-                </span>
-                <span className="hidden md:inline-block font-mono text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
-                  {selectedWidgetInstanceId || "default"}
-                </span>
-              </div>
             </div>
 
             {/* Center: Viewport Mode Switcher */}
@@ -525,6 +533,20 @@ export default function PreviewPage({
             </div>
           </div>
         </main>
+
+        {/* Right Sidebar: Widget Code & Info Panel */}
+        <aside
+          className={`w-full lg:w-74 xl:w-86 shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[-4px_0_24px_-12px_rgba(0,0,0,0.05)] lg:sticky lg:top-16 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto ${
+            mobileTab === "code" ? "flex" : "hidden lg:flex"
+          }`}
+        >
+          <WidgetCode
+            appKey={appKey}
+            productId={productId}
+            widgetId={selectedWidgetInstanceId}
+            widgetTypeId={selectedWidgetTypeId}
+          />
+        </aside>
       </div>
     </div>
   );

@@ -162,3 +162,29 @@ export function getLegacyWidgetData(): Array<WidgetData> {
     },
   ];
 }
+
+export function getWidgetDataByTypeId(typeId: string): WidgetData | null {
+  const widgetData: Array<WidgetData> = getLegacyWidgetData();
+  const classNames: Array<WidgetInstance["className"]> = [
+    "ReviewsMainWidget",
+    "ReviewsStarRatingsWidget",
+    "ReviewsCarousel",
+    "LegacyReviewHighlights",
+    "ReviewsSeoPage",
+    "PromotedProducts",
+    "ReviewsTab",
+  ];
+  for (const className of classNames) {
+    const widgetInstance = mapWidgetInstanceToWidgetData({
+      className,
+      instanceId: "dummy",
+    });
+    widgetData.push(...widgetInstance);
+  }
+  for (const widget of widgetData) {
+    if (widget.typeId === typeId) {
+      return widget;
+    }
+  }
+  return null;
+}
