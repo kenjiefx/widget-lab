@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Yotpo Reviews Main Widget</title>
+    <script type="text/javascript" src="/widgets/config.js"></script>
     <link rel="stylesheet" href="/widgets/preview.css" />
     <script type="text/javascript" src="/widgets/preview.js"></script>
   </head>
@@ -17,55 +18,22 @@
           widgetId,
           widgetTypeId,
         ) {
-          if (widgetTypeId === "1") {
-            return `<div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}" data-yotpo-product-id="${productId}"></div>`;
+          const widgetHTML = window.__WDGCONF.getWidgetHTML(
+            appKey,
+            productId,
+            widgetId,
+            widgetTypeId,
+          );
+          if (
+            widgetTypeId === "2" ||
+            widgetTypeId === "3" ||
+            widgetTypeId === "21" ||
+            widgetTypeId === "25" ||
+            widgetTypeId === "26"
+          ) {
+            return `<div class="preview-centered">${widgetHTML}</div>`;
           }
-          if (widgetTypeId === "2") {
-            return `<div class="preview-centered"><div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}" data-yotpo-product-id="${productId}" data-yotpo-cart-product-id="${productId}" data-yotpo-section-id="product"></div></div>`;
-          }
-          if (widgetTypeId === "3") {
-            return `<div class="preview-centered"><div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}" data-yotpo-product-id="${productId}" data-yotpo-cart-product-id="${productId}" data-yotpo-section-id="collection"></div></div>`;
-          }
-          if (widgetTypeId === "4") {
-            return `<div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}" data-yotpo-product-id="${productId}"></div>`;
-          }
-          if (widgetTypeId === "5") {
-            return `<div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}"></div>`;
-          }
-          if (widgetTypeId === "6") {
-            return `<div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}" data-yotpo-product-id="${productId}"></div>`;
-          }
-          if (widgetTypeId === "7") {
-            return `<div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}"></div>`;
-          }
-          if (widgetTypeId === "8") {
-            return `<div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}"></div>`;
-          }
-          if (widgetTypeId === "9") {
-            return `<div class="yotpo-widget-instance" data-yotpo-instance-id="${widgetId}" data-yotpo-product-id="${productId}"></div>`;
-          }
-          if (widgetTypeId === "20") {
-            return `<div class="yotpo yotpo-main-widget" data-product-id="${productId}"></div>`;
-          }
-          if (widgetTypeId === "21") {
-            return `<div class="preview-centered"><div class="yotpo bottomLine" data-product-id="${productId}"></div></div>`;
-          }
-          if (widgetTypeId === "22") {
-            return `<div class="yotpo yotpo-reviews-carousel" data-background-color="transparent"  data-mode="top_rated"  data-type="both"  data-count="6"  data-show-bottomline="1"  data-autoplay-enabled="1"  data-autoplay-speed="3000"  data-show-navigation="1">&nbsp;</div>`;
-          }
-          if (widgetTypeId === "23") {
-            return `<div class="yotpo yotpo-shoppers-say" data-product-id="${productId}">&nbsp;</div>`;
-          }
-          if (widgetTypeId === "24") {
-            return `<div id="yotpo-testimonials-custom-tab"></div>`;
-          }
-          if (widgetTypeId === "25") {
-            return `<div class="preview-centered"><div id="y-badges" class="yotpo yotpo-badge badge-init"></div></div>`;
-          }
-          if (widgetTypeId === "26") {
-            return `<div class="preview-centered"><div id="y-embedded-widget" class="yotpo embedded-widget" data-appkey="4WbfkD5arSq1IIQLEwVzMLn7hnXNKCVSPNCpxgcy" data-product-id="top_rated_products" data-layout="basic" data-width="100" data-reviews="5" data-header-text="Top Rated Products" data-header-background-color="919191" data-body-background-color="FFFFFF" data-font-size="18" data-font-color="FFFFFF">&nbsp;</div></div>`;
-          }
-          return "";
+          return widgetHTML;
         }
         window.onPreviewInit(renderInWidgetContainer);
       })();
