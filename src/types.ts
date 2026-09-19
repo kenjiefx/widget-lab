@@ -8,8 +8,19 @@ export type WidgetInstance = {
     | "ReviewsSeoPage"
     | "PromotedProducts"
     | "ReviewsCarousel"
-    | "QuestionsAndAnswers"
-    | "ReviewsTab";
+    | "ReviewsTab"
+    | "LegacyReviewHighlights"
+    | "LegacyYotpoBadge"
+    | "LegacyEmbeddedWidget";
+  instanceId: string;
+};
+
+export type WidgetData = {
+  typeId: string;
+  className: WidgetInstance["className"];
+  classDisplayName: string;
+  variantDisplayName: string;
+  isLegacy: boolean;
   instanceId: string;
 };
 

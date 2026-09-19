@@ -23,14 +23,16 @@ import {
 } from "lucide-react";
 import WidgetPreviewContainer from "../features/widgets/components/WidgetPreviewContainer";
 import { useProductSimpleDataGetter } from "../features/widgets/hooks/useProductSimpleDataGetter";
-import { WidgetInstance } from "../types";
+import { WidgetData, WidgetInstance } from "../types";
+import WidgetLibrary from "./pages/preview/WidgetLibrary";
 
 type Props = {
   appKey: string;
   productId: string;
+  widgetTypeId: string;
   widgetId: string;
   widgetType: string;
-  widgetInstances: WidgetInstance[];
+  widgetData: WidgetData[];
 };
 
 type ViewportMode = "fluid" | "desktop" | "tablet" | "mobile";
@@ -40,12 +42,16 @@ export default function PreviewPage({
   productId,
   widgetId,
   widgetType,
-  widgetInstances,
+  widgetTypeId,
+  widgetData,
 }: Props) {
   const { simpleProductData, isLoading } = useProductSimpleDataGetter({
     appKey,
     productId,
   });
+
+  const [selectedWidgetTypeId, setSelectedWidgetTypeId] =
+    useState<string>(widgetTypeId);
 
   const [selectedWidgetInstanceId, setSelectedWidgetInstanceId] =
     useState<string>(widgetId);
@@ -53,7 +59,6 @@ export default function PreviewPage({
     useState<string>(widgetType);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("fluid");
   const [mobileTab, setMobileTab] = useState<"preview" | "config">("preview");
-  const [searchFilter, setSearchFilter] = useState<string>("");
   const [reloadKey, setReloadKey] = useState<number>(0);
   const [isReloading, setIsReloading] = useState<boolean>(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -121,21 +126,26 @@ export default function PreviewPage({
       window.removeEventListener("scroll", updateSticky);
       window.removeEventListener("resize", updateSticky);
     };
-  }, [viewportMode, widgetInstances.length]);
+  }, [viewportMode, widgetData.length]);
 
   // Sync selected widget if props update
   useEffect(() => {
-    if (widgetId && (!selectedWidgetInstanceId || selectedWidgetInstanceId === "")) {
+    if (
+      widgetId &&
+      (!selectedWidgetInstanceId || selectedWidgetInstanceId === "")
+    ) {
       setSelectedWidgetInstanceId(widgetId);
-    } else if (!selectedWidgetInstanceId && widgetInstances.length > 0) {
-      setSelectedWidgetInstanceId(widgetInstances[0].instanceId);
-      setSelectedWidgetType(widgetInstances[0].className);
+    } else if (!selectedWidgetInstanceId && widgetData.length > 0) {
+      setSelectedWidgetInstanceId(widgetData[0].instanceId);
+      setSelectedWidgetType(widgetData[0].className);
     }
-  }, [widgetId, widgetInstances]);
+  }, [widgetId, widgetData]);
 
-  function handleSelectWidgetInstance(widget: WidgetInstance) {
-    setSelectedWidgetInstanceId(widget.instanceId);
-    setSelectedWidgetType(widget.className);
+  function handleSelectWidgetInstance(widgetTypeId: string) {
+    const selectedWidget = widgetData.find((w) => w.typeId === widgetTypeId);
+    if (!selectedWidget) return;
+    setSelectedWidgetInstanceId(selectedWidget.instanceId);
+    setSelectedWidgetTypeId(selectedWidget.typeId);
     setMobileTab("preview");
   }
 
@@ -153,30 +163,14 @@ export default function PreviewPage({
     }
   }
 
-  function getWidgetIcon(className: string) {
-    switch (className) {
-      case "ReviewsMainWidget":
-        return <MessageSquare className="w-4 h-4" />;
-      case "ReviewsStarRatingsWidget":
-        return <Star className="w-4 h-4" />;
-      case "PromotedProducts":
-        return <ShoppingBag className="w-4 h-4" />;
-      default:
-        return <Sparkles className="w-4 h-4" />;
-    }
-  }
-
-  const rawPreviewUrl = `/widgets/reviews-main-widget.html?appKey=${encodeURIComponent(
-    appKey
-  )}&productId=${encodeURIComponent(productId)}&widgetId=${encodeURIComponent(
-    selectedWidgetInstanceId
-  )}`;
-
-  const filteredInstances = widgetInstances.filter(
-    (widget) =>
-      widget.className.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      widget.instanceId.toLowerCase().includes(searchFilter.toLowerCase())
-  );
+  let params = new URLSearchParams({
+    appKey,
+    productId,
+    widgetId: selectedWidgetInstanceId,
+    widgetTypeId: selectedWidgetTypeId,
+    _r: reloadKey.toString(),
+  });
+  const rawPreviewUrl = `/widgets/preview.html?${params.toString()}`;
 
   return (
     <div className="pt-16 min-h-screen bg-[#fbfeff] flex flex-col font-sans">
@@ -270,14 +264,18 @@ export default function PreviewPage({
                   </p>
                   <div className="space-y-1.5 font-mono text-[11px] text-slate-600">
                     <div className="flex items-center justify-between py-1 border-t border-slate-200/50">
-                      <span className="text-slate-500 font-sans text-xs">Product ID</span>
+                      <span className="text-slate-500 font-sans text-xs">
+                        Product ID
+                      </span>
                       <div className="flex items-center gap-1">
                         <span className="truncate max-w-[130px] font-semibold text-slate-800">
                           {productId}
                         </span>
                         <button
                           type="button"
-                          onClick={() => copyToClipboard(productId, "productId")}
+                          onClick={() =>
+                            copyToClipboard(productId, "productId")
+                          }
                           className="p-1 hover:text-[#60a4ff] text-slate-400 transition-colors"
                           title="Copy Product ID"
                         >
@@ -292,7 +290,9 @@ export default function PreviewPage({
 
                     {simpleProductData.yotpoInternalId && (
                       <div className="flex items-center justify-between py-1 border-t border-slate-200/50">
-                        <span className="text-slate-500 font-sans text-xs">Yotpo ID</span>
+                        <span className="text-slate-500 font-sans text-xs">
+                          Yotpo ID
+                        </span>
                         <span className="font-semibold text-slate-800">
                           {simpleProductData.yotpoInternalId}
                         </span>
@@ -302,8 +302,12 @@ export default function PreviewPage({
                 </div>
               ) : (
                 <div className="text-xs text-slate-600 py-1">
-                  <p className="font-medium text-slate-700">Product details not found</p>
-                  <p className="font-mono text-[11px] text-slate-500 mt-1">ID: {productId}</p>
+                  <p className="font-medium text-slate-700">
+                    Product details not found
+                  </p>
+                  <p className="font-mono text-[11px] text-slate-500 mt-1">
+                    ID: {productId}
+                  </p>
                 </div>
               )}
             </div>
@@ -322,7 +326,9 @@ export default function PreviewPage({
                   {copiedField === "appKey" ? (
                     <>
                       <Check className="w-3 h-3 text-emerald-500" />
-                      <span className="text-emerald-600 font-medium">Copied</span>
+                      <span className="text-emerald-600 font-medium">
+                        Copied
+                      </span>
                     </>
                   ) : (
                     <>
@@ -337,84 +343,11 @@ export default function PreviewPage({
               </div>
             </div>
 
-            {/* Widget Instances Selector */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  <Layers className="w-3.5 h-3.5 text-[#60a4ff]" /> Available Instances
-                </label>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sky-50 text-[#0f53ac] border border-sky-100">
-                  {widgetInstances.length}
-                </span>
-              </div>
-
-              {widgetInstances.length > 4 && (
-                <div className="relative">
-                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={searchFilter}
-                    onChange={(e) => setSearchFilter(e.target.value)}
-                    placeholder="Search instances..."
-                    className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#60a4ff] focus:bg-white transition-all"
-                  />
-                </div>
-              )}
-
-              {filteredInstances.length === 0 ? (
-                <div className="p-4 rounded-xl border border-dashed border-slate-200 text-center text-xs text-slate-500">
-                  {widgetInstances.length === 0
-                    ? "No widget instances discovered for this App Key."
-                    : "No widget instances matching search."}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {filteredInstances.map((widget) => {
-                    const isSelected = widget.instanceId === selectedWidgetInstanceId;
-                    return (
-                      <button
-                        key={widget.instanceId}
-                        type="button"
-                        onClick={() => handleSelectWidgetInstance(widget)}
-                        className={`w-full text-left p-3 rounded-xl transition-all duration-200 border relative ${
-                          isSelected
-                            ? "border-[#60a4ff] bg-gradient-to-r from-sky-50/80 to-blue-50/50 shadow-sm ring-2 ring-[#60a4ff]/25"
-                            : "border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/70"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                                isSelected
-                                  ? "is-primary-background text-white shadow-xs"
-                                  : "bg-slate-100 text-slate-500"
-                              }`}
-                            >
-                              {getWidgetIcon(widget.className)}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-xs font-semibold text-[#122a3d] truncate">
-                                {widget.className}
-                              </p>
-                              <p className="font-mono text-[10px] text-slate-400 mt-0.5 truncate">
-                                ID: {widget.instanceId || "default"}
-                              </p>
-                            </div>
-                          </div>
-                          {isSelected && (
-                            <span className="shrink-0 flex items-center gap-1 text-[10px] font-medium text-[#0f53ac] bg-white px-2 py-0.5 rounded-full border border-sky-200 shadow-2xs">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                              Active
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            <WidgetLibrary
+              selectedWidgetTypeId={selectedWidgetTypeId}
+              widgetData={widgetData}
+              onWidgetSelect={handleSelectWidgetInstance}
+            />
           </div>
         </aside>
 
@@ -442,7 +375,7 @@ export default function PreviewPage({
               <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
               <div className="flex items-center gap-2 truncate">
                 <span className="text-xs sm:text-sm font-semibold text-[#122a3d] truncate">
-                  {selectedWidgetType}
+                  {selectedWidgetType || "No widget selected"}
                 </span>
                 <span className="hidden md:inline-block font-mono text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
                   {selectedWidgetInstanceId || "default"}
@@ -549,10 +482,10 @@ export default function PreviewPage({
                 viewportMode === "fluid"
                   ? "h-[calc(100vh-11.5rem)] min-h-[520px]"
                   : viewportMode === "desktop"
-                  ? "max-w-[1200px] h-[calc(100vh-11.5rem)] min-h-[520px]"
-                  : viewportMode === "tablet"
-                  ? "max-w-[768px] h-[calc(100vh-11.5rem)] min-h-[520px]"
-                  : "max-w-[390px] h-[calc(100vh-11.5rem)] min-h-[520px] rounded-3xl border-2 border-slate-300 shadow-[0_20px_50px_-16px_rgba(15,23,42,0.15)]"
+                    ? "max-w-[1200px] h-[calc(100vh-11.5rem)] min-h-[520px]"
+                    : viewportMode === "tablet"
+                      ? "max-w-[768px] h-[calc(100vh-11.5rem)] min-h-[520px]"
+                      : "max-w-[390px] h-[calc(100vh-11.5rem)] min-h-[520px] rounded-3xl border-2 border-slate-300 shadow-[0_20px_50px_-16px_rgba(15,23,42,0.15)]"
               }`}
             >
               {/* Simulated Browser Bar (Eliminates the raw iframe feel) */}
@@ -572,10 +505,10 @@ export default function PreviewPage({
                   {viewportMode === "fluid"
                     ? "100%"
                     : viewportMode === "desktop"
-                    ? "1200px"
-                    : viewportMode === "tablet"
-                    ? "768px"
-                    : "390px"}
+                      ? "1200px"
+                      : viewportMode === "tablet"
+                        ? "768px"
+                        : "390px"}
                 </div>
               </div>
 
@@ -585,7 +518,7 @@ export default function PreviewPage({
                   appKey={appKey}
                   productId={productId}
                   widgetId={selectedWidgetInstanceId}
-                  widgetType={selectedWidgetType as WidgetInstance["className"]}
+                  widgetTypeId={selectedWidgetTypeId}
                   reloadKey={reloadKey}
                 />
               </div>

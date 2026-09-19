@@ -2,18 +2,22 @@ import { useEffect, useState } from "react";
 import Header from "./layout/Header";
 import StartPage from "./layout/StartPage";
 import getWidgetInstanceIds from "./features/loader/services/getWidgetInstanceIds";
-import { WidgetInstance } from "./types";
+import { WidgetData, WidgetInstance } from "./types";
 import WidgetPreviewContainer from "./features/widgets/components/WidgetPreviewContainer";
 import PreviewPage from "./layout/PreviewPage";
 import useStoreContext from "./features/store/hooks/useStoreContext";
+import {
+  getLegacyWidgetData,
+  mapWidgetInstanceToWidgetData,
+} from "./features/widgets/services/widgetData";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [widgetInstanceId, setWidgetInstanceId] = useState<string | null>(null);
-  const [widgetInstances, setWidgetInstances] = useState<WidgetInstance[]>([]);
+  const [widgetData, setWidgetData] = useState<WidgetData[]>([]);
   const { appKey, productId } = useStoreContext();
   const urlParams = new URLSearchParams(window.location.search);
-  const widgetType = urlParams.get("widget") || "ReviewsMainWidget";
+  const widgetType = "ReviewsMainWidget";
   useEffect(() => {
     async function fetchWidgets() {
       setIsLoading(true);
@@ -25,11 +29,19 @@ export default function App() {
       const targetInstance = widgetInstances.find(
         (widget) => widget.className === widgetType,
       );
-      console.log("Target widget instance:", targetInstance);
       if (targetInstance) {
         setWidgetInstanceId(targetInstance.instanceId);
       }
-      setWidgetInstances(widgetInstances);
+      const allWidgetData: WidgetData[] = [];
+      for (const instance of widgetInstances) {
+        const widgetData = mapWidgetInstanceToWidgetData(instance);
+        if (widgetData.length === 0) {
+          continue;
+        }
+        allWidgetData.push(...widgetData);
+      }
+      const legacyWidgets = getLegacyWidgetData();
+      setWidgetData([...allWidgetData, ...legacyWidgets]);
       setIsLoading(false);
     }
     fetchWidgets();
@@ -44,8 +56,9 @@ export default function App() {
             appKey={appKey}
             productId={productId}
             widgetId={widgetInstanceId || ""}
+            widgetTypeId={"1"}
             widgetType={widgetType}
-            widgetInstances={widgetInstances}
+            widgetData={widgetData}
           />
         </main>
       ) : (
