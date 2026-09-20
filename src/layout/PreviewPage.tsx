@@ -167,7 +167,7 @@ export default function PreviewPage({
   return (
     <div className="pt-16 min-h-screen bg-[#fbfeff] flex flex-col font-sans">
       {/* Mobile Tab Bar */}
-      <div className="lg:hidden flex items-center justify-center bg-white border-b border-slate-200 px-4 py-2 shrink-0">
+      <div className="lg:hidden flex items-center justify-center border-b border-slate-200 px-4 py-2 shrink-0">
         <div className="flex w-full max-w-sm bg-slate-100 p-1 rounded-xl">
           <button
             type="button"
@@ -208,7 +208,7 @@ export default function PreviewPage({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col lg:flex-row items-start min-h-[calc(100vh-4rem)]">
+      <div className="flex-1 flex flex-col lg:flex-row items-start min-h-[calc(100vh-4rem)] bg-gradient-to-b from-white to-slate-100/70">
         {/* Left Sidebar: Control & Metadata Panel */}
         <aside
           className={`w-full lg:w-80 xl:w-92 shrink-0 border-r border-slate-200/80 bg-white/95 backdrop-blur-sm flex-col z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] ${
@@ -225,9 +225,9 @@ export default function PreviewPage({
               <span>Back to Setup</span>
             </a>
             <div className="mt-1">
-              <h1 className="text-xl font-bold is-title-text text-[#122a3d]">
+              {/* <h1 className="text-xl font-bold is-title-text text-[#122a3d]">
                 Widget Studio
-              </h1>
+              </h1> */}
               <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
                 Inspect and test your live Yotpo widgets
               </p>
