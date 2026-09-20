@@ -1,8 +1,4 @@
 @import "tailwindcss";
-@import "@fontsource/Inter"; /* Defaults to weight 400 */
-@import "@fontsource/Inter/400.css"; /* Specify weight */
-@import "@fontsource/Inter/800.css"; /* Specify weight */
-@import "@fontsource/Fredoka-One"; /* Defaults to weight 400 */
 
 
 :root {

@@ -8631,18 +8631,18 @@ function WidgetHTML({
 function PreviewPage({
   appKey,
   productId,
-  widgetId,
+  focusedWidgetInstanceId,
   widgetType,
   widgetTypeId,
   language,
-  widgetData
+  widgetData,
+  onUpdateFocusedWidgetInstanceId
 }) {
   useProductSimpleDataGetter({
     appKey,
     productId
   });
   const [selectedWidgetTypeId, setSelectedWidgetTypeId] = reactExports.useState(widgetTypeId);
-  const [selectedWidgetInstanceId, setSelectedWidgetInstanceId] = reactExports.useState(widgetId);
   const [viewportMode, setViewportMode] = reactExports.useState("fluid");
   const [mobileTab, setMobileTab] = reactExports.useState(
     "preview"
@@ -8701,7 +8701,7 @@ function PreviewPage({
   function handleSelectWidgetInstance(widgetTypeId2) {
     const selectedWidget = widgetData.find((w) => w.typeId === widgetTypeId2);
     if (!selectedWidget) return;
-    setSelectedWidgetInstanceId(selectedWidget.instanceId);
+    onUpdateFocusedWidgetInstanceId(selectedWidget.instanceId);
     setSelectedWidgetTypeId(selectedWidget.typeId);
     setMobileTab("preview");
   }
@@ -8720,7 +8720,7 @@ function PreviewPage({
   const rawPreviewUrl = generatePreviewUrl({
     appKey,
     productId,
-    widgetId: selectedWidgetInstanceId,
+    widgetId: focusedWidgetInstanceId,
     widgetTypeId: selectedWidgetTypeId,
     language,
     reloadKey: reloadKey.toString()
@@ -8790,7 +8790,7 @@ function PreviewPage({
                 {
                   appKey,
                   productId,
-                  widgetId: selectedWidgetInstanceId,
+                  widgetId: focusedWidgetInstanceId,
                   widgetTypeId: selectedWidgetTypeId,
                   language
                 }
@@ -8963,7 +8963,7 @@ function PreviewPage({
                           appKey,
                           productId,
                           language,
-                          widgetId: selectedWidgetInstanceId,
+                          widgetId: focusedWidgetInstanceId,
                           widgetTypeId: selectedWidgetTypeId,
                           reloadKey
                         }
@@ -9015,7 +9015,7 @@ function PreviewPage({
 }
 function App() {
   const [isLoading, setIsLoading] = reactExports.useState(true);
-  const [widgetInstanceId, setWidgetInstanceId] = reactExports.useState(null);
+  const [focusedWidgetInstanceId, setFocusedWidgetInstanceId] = reactExports.useState(null);
   const [widgetData, setWidgetData] = reactExports.useState([]);
   const { appKey, productId, language } = useStoreContext();
   new URLSearchParams(window.location.search);
@@ -9031,8 +9031,10 @@ function App() {
       const targetInstance = widgetInstances.find(
         (widget) => widget.className === widgetType
       );
+      console.log({ targetInstance, widgetInstances });
       if (targetInstance) {
-        setWidgetInstanceId(targetInstance.instanceId);
+        console.log("Found target widget instance:", targetInstance);
+        setFocusedWidgetInstanceId(targetInstance.instanceId);
       }
       const allWidgetData = [];
       for (const instance of widgetInstances) {
@@ -9056,11 +9058,12 @@ function App() {
       {
         appKey,
         productId,
-        widgetId: widgetInstanceId || "",
+        focusedWidgetInstanceId: focusedWidgetInstanceId || "",
         widgetTypeId: "1",
         widgetType,
         language,
-        widgetData
+        widgetData,
+        onUpdateFocusedWidgetInstanceId: setFocusedWidgetInstanceId
       }
     ) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("main", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StartPage, {}) })
   ] });

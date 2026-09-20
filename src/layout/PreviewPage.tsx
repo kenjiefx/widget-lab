@@ -34,10 +34,11 @@ type Props = {
   appKey: string;
   productId: string;
   widgetTypeId: string;
-  widgetId: string;
+  focusedWidgetInstanceId: string;
   widgetType: string;
   language: string;
   widgetData: WidgetData[];
+  onUpdateFocusedWidgetInstanceId: (widgetInstanceId: string) => void;
 };
 
 type ViewportMode = "fluid" | "desktop" | "tablet" | "mobile";
@@ -45,11 +46,12 @@ type ViewportMode = "fluid" | "desktop" | "tablet" | "mobile";
 export default function PreviewPage({
   appKey,
   productId,
-  widgetId,
+  focusedWidgetInstanceId,
   widgetType,
   widgetTypeId,
   language,
   widgetData,
+  onUpdateFocusedWidgetInstanceId,
 }: Props) {
   const { simpleProductData, isLoading } = useProductSimpleDataGetter({
     appKey,
@@ -58,8 +60,6 @@ export default function PreviewPage({
 
   const [selectedWidgetTypeId, setSelectedWidgetTypeId] =
     useState<string>(widgetTypeId);
-  const [selectedWidgetInstanceId, setSelectedWidgetInstanceId] =
-    useState<string>(widgetId);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("fluid");
   const [mobileTab, setMobileTab] = useState<"preview" | "config" | "code">(
     "preview",
@@ -136,7 +136,7 @@ export default function PreviewPage({
   function handleSelectWidgetInstance(widgetTypeId: string) {
     const selectedWidget = widgetData.find((w) => w.typeId === widgetTypeId);
     if (!selectedWidget) return;
-    setSelectedWidgetInstanceId(selectedWidget.instanceId);
+    onUpdateFocusedWidgetInstanceId(selectedWidget.instanceId);
     setSelectedWidgetTypeId(selectedWidget.typeId);
     setMobileTab("preview");
   }
@@ -158,7 +158,7 @@ export default function PreviewPage({
   const rawPreviewUrl = generatePreviewUrl({
     appKey,
     productId,
-    widgetId: selectedWidgetInstanceId,
+    widgetId: focusedWidgetInstanceId,
     widgetTypeId: selectedWidgetTypeId,
     language,
     reloadKey: reloadKey.toString(),
@@ -239,7 +239,7 @@ export default function PreviewPage({
             <WidgetHTML
               appKey={appKey}
               productId={productId}
-              widgetId={selectedWidgetInstanceId}
+              widgetId={focusedWidgetInstanceId}
               widgetTypeId={selectedWidgetTypeId}
               language={language}
             />
@@ -439,7 +439,7 @@ export default function PreviewPage({
                   appKey={appKey}
                   productId={productId}
                   language={language}
-                  widgetId={selectedWidgetInstanceId}
+                  widgetId={focusedWidgetInstanceId}
                   widgetTypeId={selectedWidgetTypeId}
                   reloadKey={reloadKey}
                 />

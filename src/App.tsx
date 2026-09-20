@@ -3,7 +3,6 @@ import Header from "./layout/Header";
 import StartPage from "./layout/StartPage";
 import getWidgetInstanceIds from "./features/loader/services/getWidgetInstanceIds";
 import { WidgetData, WidgetInstance } from "./types";
-import WidgetPreviewContainer from "./features/widgets/components/WidgetPreviewContainer";
 import PreviewPage from "./layout/PreviewPage";
 import useStoreContext from "./features/store/hooks/useStoreContext";
 import {
@@ -13,7 +12,9 @@ import {
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [widgetInstanceId, setWidgetInstanceId] = useState<string | null>(null);
+  const [focusedWidgetInstanceId, setFocusedWidgetInstanceId] = useState<
+    string | null
+  >(null);
   const [widgetData, setWidgetData] = useState<WidgetData[]>([]);
   const { appKey, productId, language } = useStoreContext();
   const urlParams = new URLSearchParams(window.location.search);
@@ -29,8 +30,10 @@ export default function App() {
       const targetInstance = widgetInstances.find(
         (widget) => widget.className === widgetType,
       );
+      console.log({ targetInstance, widgetInstances });
       if (targetInstance) {
-        setWidgetInstanceId(targetInstance.instanceId);
+        console.log("Found target widget instance:", targetInstance);
+        setFocusedWidgetInstanceId(targetInstance.instanceId);
       }
       const allWidgetData: WidgetData[] = [];
       for (const instance of widgetInstances) {
@@ -55,11 +58,12 @@ export default function App() {
           <PreviewPage
             appKey={appKey}
             productId={productId}
-            widgetId={widgetInstanceId || ""}
+            focusedWidgetInstanceId={focusedWidgetInstanceId || ""}
             widgetTypeId={"1"}
             widgetType={widgetType}
             language={language}
             widgetData={widgetData}
+            onUpdateFocusedWidgetInstanceId={setFocusedWidgetInstanceId}
           />
         </main>
       ) : (
