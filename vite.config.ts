@@ -9,6 +9,7 @@ export default defineConfig(({ command }) => {
       strictPort: true,
     },
     plugins: [react()],
+    base: "/",
     build: {
       minify: false,
       rollupOptions: {
