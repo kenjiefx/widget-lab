@@ -139,6 +139,28 @@ export default function Header({ isPreviewPage }: Props) {
             />
           </form>
         )}
+        {!isPreviewPage && (
+          <section className="flex items-center gap-2 sm:gap-3">
+            <a
+              href="/pages/terms-and-conditions.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 sm:gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs sm:text-[0.85rem] hover:bg-slate-50 hover:border-slate-300 transition-all"
+            >
+              <ExternalLink className="w-4 h-4" strokeWidth={2} />
+              <span>Terms and Conditions</span>
+            </a>
+            <a
+              href="/pages/privacy-policy.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 sm:gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs sm:text-[0.85rem] hover:bg-slate-50 hover:border-slate-300 transition-all"
+            >
+              <ExternalLink className="w-4 h-4" strokeWidth={2} />
+              <span>Privacy Policy</span>
+            </a>
+          </section>
+        )}
       </div>
     </header>
   );

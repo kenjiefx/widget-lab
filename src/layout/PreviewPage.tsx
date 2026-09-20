@@ -448,6 +448,45 @@ export default function PreviewPage({
           </div>
         </main>
       </div>
+
+      <div className="flex items-center fixed bottom-1 right-3">
+        <div>
+          <a
+            href="/pages/terms-and-conditions.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-500 hover:text-[#60a4ff] transition-colors"
+          >
+            Terms And Conditions
+          </a>
+        </div>
+        <div>
+          <span className="text-xs text-slate-400 mx-1">|</span>
+        </div>
+        <div>
+          <a
+            href="/pages/privacy-policy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-500 hover:text-[#60a4ff] transition-colors"
+          >
+            Privacy Policy
+          </a>
+        </div>
+        <div>
+          <span className="text-xs text-slate-400 mx-1">|</span>
+        </div>
+        <div>
+          <a
+            href="https://www.github.com/kenjiefx/widget-lab"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-500 hover:text-[#60a4ff] transition-colors"
+          >
+            Made with ❤️ by kenjiefx
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
