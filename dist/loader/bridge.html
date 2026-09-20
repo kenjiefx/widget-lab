@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Yotpo Extraction Bridge</title>
+  </head>
+  <body>
+    <!-- 
+    This page is used as a bridge to extract the Yotpo widget instances from the loader script. 
+    It is loaded in an iframe and communicates with the parent window using postMessage. 
+    The appKey is passed as a query parameter in the URL.
+    -->
+    <script>
+      (function () {
+        /**
+         * Get the appKey from the URL query parameters
+         * @returns {string|null} The appKey value or null if not found
+         */
+        function getAppKeyContext() {
+          const urlParams = new URLSearchParams(window.location.search);
+          return urlParams.get("appKey");
+        }
+        // Retrieve the appKey from the URL query parameters
+        const appKey = getAppKeyContext();
+        if (null === appKey) {
+          window.parent.postMessage(
+            { type: "LOADER_BRIDGE_ERROR", error: "Missing appKey param" },
+            "*",
+          );
+          return;
+        }
+        // Initialize the global yotpoWidgetsContainer object if it
+        // doesn't exist
+        window.yotpoWidgetsContainer = window.yotpoWidgetsContainer || {
+          guids: {},
+        };
+        // Create a script element to load the Yotpo widget loader script
+        const script = document.createElement("script");
+        script.src = `https://cdn-widgetsrepository.yotpo.com/v1/loader/${appKey}`;
+        script.onload = function () {
+          try {
+            const guids = window.yotpoWidgetsContainer?.guids ?? null;
+            if (null === guids) {
+              throw new Error("Widget loader guids not found");
+            }
+            if (typeof guids !== "object") {
+              throw new Error("Widget loader guids must be an object");
+            }
+            const targetGuid = guids[appKey] ?? null;
+            if (null === targetGuid) {
+              throw new Error("Widget target guid not found");
+            }
+            if (typeof targetGuid !== "object") {
+              throw new Error("Widget target guid must be an object");
+            }
+            const rawWidgets = targetGuid.config?.widgets ?? null;
+            if (null === rawWidgets) {
+              throw new Error("Widget target config not found");
+            }
+            if (typeof rawWidgets !== "object") {
+              throw new Error("Widget target config must be an object");
+            }
+            // Format clean array payload
+            const instances = Object.values(rawWidgets).map((w) => ({
+              instanceId: w.instanceId,
+              className: w.className,
+            }));
+            // Send data back to the parent window
+            window.parent.postMessage(
+              { type: "LOADER_BRIDGE_SUCCESS", instances },
+              "*",
+            );
+          } catch (err) {
+            window.parent.postMessage(
+              { type: "LOADER_BRIDGE_ERROR", error: err.message },
+              "*",
+            );
+          }
+        };
+        script.onerror = function () {
+          window.parent.postMessage(
+            { type: "LOADER_BRIDGE_ERROR", error: "Failed to load script" },
+            "*",
+          );
+        };
+        document.head.appendChild(script);
+      })();
+    </script>
+  </body>
+</html>

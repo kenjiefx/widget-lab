@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Yotpo Reviews Main Widget</title>
+    <script type="text/javascript" src="/widgets/config.js"></script>
+    <link rel="stylesheet" href="/widgets/preview.css" />
+    <script type="text/javascript" src="/widgets/preview.js"></script>
+  </head>
+  <body>
+    <div id="widget_container"></div>
+    <script type="text/javascript">
+      (function () {
+        function renderInWidgetContainer(
+          appKey,
+          productId,
+          widgetId,
+          widgetTypeId,
+        ) {
+          const widgetHTML = window.__WDGCONF.getWidgetHTML(
+            appKey,
+            productId,
+            widgetId,
+            widgetTypeId,
+          );
+          if (
+            widgetTypeId === "2" ||
+            widgetTypeId === "3" ||
+            widgetTypeId === "21" ||
+            widgetTypeId === "25" ||
+            widgetTypeId === "26"
+          ) {
+            return `<div class="preview-centered">${widgetHTML}</div>`;
+          }
+          return widgetHTML;
+        }
+        window.onPreviewInit(renderInWidgetContainer);
+      })();
+    </script>
+  </body>
+</html>

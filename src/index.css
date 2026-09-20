@@ -1,0 +1,307 @@
+@import "tailwindcss";
+@import "@fontsource/Inter"; /* Defaults to weight 400 */
+@import "@fontsource/Inter/400.css"; /* Specify weight */
+@import "@fontsource/Inter/800.css"; /* Specify weight */
+@import "@fontsource/Fredoka-One"; /* Defaults to weight 400 */
+
+
+:root {
+  --background: #fbfeff;
+  --foreground: #222222;
+
+  --primary-gradient: linear-gradient(90deg, #7debf2, #60a4ff);
+  --primary-gradient-hover: linear-gradient(90deg, #53d1da, #0f53ac);
+  --primary-gradient-light: linear-gradient(90deg, #9df3f9, #85b8f9);
+
+  --font-sans: "Inter", sans-serif;
+  font-family: var(--font-sans);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono, monospace);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+@layer base {
+  a:link {
+    text-decoration: none;
+  }
+  a.is-link {
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    @apply font-medium;
+  }
+  a:hover {
+    text-decoration: none !important;
+  }
+  a.is-link:hover {
+    text-decoration: underline !important;
+  }
+  a:visited {
+    text-decoration: none;
+  }
+  .icon {
+    @apply w-5 h-5 text-sky-500;
+  }
+  hr {
+    @apply border-t border-gray-200;
+  }
+
+  /* Remove spinners in Chrome / Edge / Safari */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Remove spinner in Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    box-sizing: border-box; /* ensure padding is applied as expected */
+  }
+
+  /* Primary Background */
+  .is-primary-background {
+    background: var(--primary-gradient);
+  }
+  [disabled="false"].is-primary-background:hover {
+    background: var(--primary-gradient-hover);
+  }
+  [disabled="false"].is-primary-background:focus {
+    background: var(--primary-gradient-hover);
+  }
+
+  .is-primary-text {
+    background: linear-gradient(90deg, #7debf2, #60a4ff);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+  }
+
+  .logo-text {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.010em;
+  }
+
+  .is-title-text {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+  }
+
+  /** Inputs */
+  input {
+    outline: none;
+  }
+  textarea {
+    outline: none;
+  }
+  /** Primary Outline */
+  .is-primary-outline {
+    border: 1px solid; /* You need a solid border to give it width and style */
+    border-image: var(--primary-gradient) 1;
+  }
+  [disabled="false"].is-primary-outline:hover {
+    background: var(--primary-gradient-hover);
+    border: 1px solid var(--primary-gradient-hover);
+  }
+  [disabled="false"].is-primary-outline:focus {
+    background: var(--primary-gradient-hover);
+    border: 1px solid var(--primary-gradient-hover);
+  }
+  /** Primary Select **/
+  .is-primary-select-medium-padding {
+    padding: 8.5px 3px 8.5px 3px;
+  }
+}
+
+@layer utilities {
+}
+
+@layer components {
+}
+
+.is-logo-circle {
+  border-radius: 100px;
+}
+
+.star-glow {
+            filter: drop-shadow(0 0 8px rgba(125, 235, 242, 0.8)) drop-shadow(0 0 16px rgba(96, 164, 255, 0.6));
+        }
+
+
+/* Path 1: Center rise and erupt straight up high */
+        @keyframes starBoilCenter {
+            0% {
+                transform: translate(0px, 40px) scale(0.2) rotate(0deg);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.9;
+                transform: translate(-3px, 25px) scale(0.5) rotate(45deg);
+            }
+            35% {
+                /* At liquid surface */
+                transform: translate(2px, 0px) scale(0.7) rotate(90deg);
+            }
+            50% {
+                /* Squeezing through neck */
+                transform: translate(0px, -40px) scale(0.5) rotate(135deg);
+                opacity: 1;
+            }
+            75% {
+                /* Erupting out top */
+                transform: translate(-8px, -110px) scale(1.1) rotate(220deg);
+                opacity: 0.9;
+            }
+            100% {
+                /* Dissolving high in the air */
+                transform: translate(12px, -170px) scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Path 2: Left side swirl erupting leftward */
+        @keyframes starBoilLeft {
+            0% {
+                transform: translate(-25px, 45px) scale(0.15) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+                transform: translate(-15px, 20px) scale(0.5) rotate(-60deg);
+            }
+            40% {
+                transform: translate(-5px, -10px) scale(0.65) rotate(-120deg);
+            }
+            60% {
+                /* Neck */
+                transform: translate(-1px, -50px) scale(0.45) rotate(-180deg);
+                opacity: 1;
+            }
+            80% {
+                /* Bursting out left */
+                transform: translate(-45px, -120px) scale(1.2) rotate(-270deg);
+                opacity: 0.85;
+            }
+            100% {
+                transform: translate(-75px, -165px) scale(0.1) rotate(-360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Path 3: Right side swirl erupting rightward */
+        @keyframes starBoilRight {
+            0% {
+                transform: translate(25px, 42px) scale(0.2) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.85;
+                transform: translate(15px, 15px) scale(0.55) rotate(50deg);
+            }
+            40% {
+                transform: translate(4px, -15px) scale(0.6) rotate(110deg);
+            }
+            60% {
+                /* Neck */
+                transform: translate(2px, -55px) scale(0.4) rotate(170deg);
+                opacity: 1;
+            }
+            80% {
+                /* Bursting out right */
+                transform: translate(45px, -125px) scale(1.15) rotate(260deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(70px, -175px) scale(0) rotate(340deg);
+                opacity: 0;
+            }
+        }
+
+        /* Path 4: Small fast micro bubbles */
+        @keyframes starBoilMicro {
+            0% {
+                transform: translate(-8px, 50px) scale(0.1) rotate(0deg);
+                opacity: 0;
+            }
+            25% {
+                opacity: 1;
+                transform: translate(8px, 10px) scale(0.4) rotate(90deg);
+            }
+            50% {
+                transform: translate(-2px, -35px) scale(0.3) rotate(180deg);
+            }
+            75% {
+                transform: translate(15px, -95px) scale(0.8) rotate(270deg);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(-20px, -150px) scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .star-particle {
+            position: absolute;
+            transform-origin: center center;
+            will-change: transform, opacity;
+        }
+
+        /* Staggered star animation classes */
+        .star-1 { animation: starBoilCenter 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 0.0s; }
+        .star-2 { animation: starBoilLeft 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 0.5s; }
+        .star-3 { animation: starBoilRight 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 1.1s; }
+        .star-4 { animation: starBoilCenter 4.0s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 1.7s; }
+        .star-5 { animation: starBoilMicro 2.9s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 0.3s; }
+        .star-6 { animation: starBoilRight 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 2.2s; }
+        .star-7 { animation: starBoilLeft 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 2.7s; }
+        .star-8 { animation: starBoilMicro 3.1s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 1.4s; }
+
+/* Start page: flask liquid + rising bubbles */
+.start-liquid {
+    transform-origin: center;
+    animation: startLiquidWave 3.4s ease-in-out infinite;
+}
+@keyframes startLiquidWave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-0.6px); }
+}
+
+.start-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #a9defd 70%);
+    opacity: 0;
+    animation: startBubbleRise 3.6s ease-in infinite;
+}
+.start-bubble-1 { top: 62%; left: 44%; width: 5px; height: 5px; animation-delay: 0s; }
+.start-bubble-2 { top: 66%; left: 52%; width: 7px; height: 7px; animation-delay: 1.1s; }
+.start-bubble-3 { top: 60%; left: 49%; width: 4px; height: 4px; animation-delay: 2.2s; }
+
+@keyframes startBubbleRise {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    15% { opacity: 0.9; }
+    80% { opacity: 0.5; }
+    100% { transform: translateY(-46px) scale(1.1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .start-liquid, .start-bubble, .star-particle {
+        animation: none !important;
+    }
+}
